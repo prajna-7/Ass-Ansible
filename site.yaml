@@ -1,0 +1,55 @@
+- hosts: webservers
+  tasks:
+    - name: Copy Flask app to remote server
+      copy:
+        src: ~/.ansible/application2.py
+        dest: /home/ubuntu/application2.py
+    
+    - name: Install Python 3 and pip
+      become: true
+      apt:
+        name: 
+          - python3
+          - python3-pip
+        update_cache: yes
+    
+    - name: Install Flask
+      become: true
+      pip:
+        name: Flask
+    
+    - name: Start the Flask app in the background
+      become: true
+      shell: nohup python3 /home/ubuntu/application2.py > /dev/null 2>&1 &
+
+- name: Install and configure HAProxy
+  hosts: HAproxy
+  become: true
+
+  vars:
+    app_servers:
+      - { name: "devA", ip: "10.0.129.204" }
+      - { name: "devB", ip: "10.0.133.67" }
+      - { name: "devC", ip: "10.0.138.181" }
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install HAProxy
+      apt:
+        name: haproxy
+        state: latest
+
+    - name: Configure HAProxy
+      template:
+        src: ~/.ansible/haproxy.cfg.j2
+        dest: /etc/haproxy/haproxy.cfg
+      notify: restart haproxy
+
+  handlers:
+    - name: restart haproxy
+      service:
+        name: haproxy
+        state: restarted

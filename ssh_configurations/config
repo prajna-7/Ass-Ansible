@@ -1,0 +1,28 @@
+Host BastionNSO
+  Hostname 54.175.113.212
+  User ubuntu
+  IdentityFile ~/.ssh/BastionNSO.pem
+
+Host devA
+  Hostname 10.0.129.204
+  User ubuntu
+  IdentityFile ~/.ssh/devA.pem
+  ProxyJump BastionNSO
+
+Host devB
+  Hostname 10.0.133.67
+  User ubuntu
+  IdentityFile ~/.ssh/devB.pem
+  ProxyJump BastionNSO
+
+Host devC
+  Hostname 10.0.138.181
+  User ubuntu
+  IdentityFile ~/.ssh/devC.pem
+  ProxyJump BastionNSO
+
+Host haproxy
+  Hostname 34.229.178.174
+  User ubuntu
+  IdentityFile ~/.ssh/haproxy.pem
+  ProxyJump BastionNSO
