@@ -48,6 +48,6 @@ sudo apt install ansible
 #Check the path of the application.py and haproxy.cfg.j2 is accurate otherwise set it according to its location in you host by running following command#
 nano site.yaml
 
-#Now run the command to play ansible-playbook#
+#Now run the command to play ansible playbook#
 
 ansible-playbook -i hosts site.yaml
