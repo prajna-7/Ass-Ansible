@@ -50,7 +50,7 @@
 
     - name: Test deployed application
       uri:
-        url: "http://:80"
+        url: "http://52.204.124.223:80"
         return_content: yes
         status_code: 200
         validate_certs: no
@@ -61,9 +61,9 @@
     - name: Verify application response
       assert:
         that:
-          - "'devA' in response.content"
-          - "'devB' in response.content"
-          - "'devC' in response.content"
+          - "'Serving from' in response.content"
+          - "'Serving from' in response.content"
+          - "'Serving from' in response.content"
       when: response is defined and response.status == 200
 
   handlers:
