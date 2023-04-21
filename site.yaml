@@ -48,6 +48,24 @@
         dest: /etc/haproxy/haproxy.cfg
       notify: restart haproxy
 
+    - name: Test deployed application
+      uri:
+        url: "http://:80"
+        return_content: yes
+        status_code: 200
+        validate_certs: no
+      register: response
+      retries: 3
+      delay: 10
+
+    - name: Verify application response
+      assert:
+        that:
+          - "'devA' in response.content"
+          - "'devB' in response.content"
+          - "'devC' in response.content"
+      when: response is defined and response.status == 200
+
   handlers:
     - name: restart haproxy
       service:
