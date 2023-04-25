@@ -28,9 +28,9 @@
 
   vars:
     app_servers:
-      - { name: "devA", ip: "10.0.129.204" }
-      - { name: "devB", ip: "10.0.133.67" }
-      - { name: "devC", ip: "10.0.138.181" }
+      - { name: "devA", ip: "devA_IP_Address" }
+      - { name: "devB", ip: "devB_IP_Address" }
+      - { name: "devC", ip: "devC_IP_Address" }
 
   tasks:
     - name: Update apt cache
@@ -50,7 +50,7 @@
 
     - name: Test deployed application
       uri:
-        url: "http://52.204.124.223:80"
+        url: "http://HApeoxy_IP_Address:Port"
         return_content: yes
         status_code: 200
         validate_certs: no
