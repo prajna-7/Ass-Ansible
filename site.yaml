@@ -38,7 +38,7 @@
 
     - name: Configure HAProxy
       template:
-        src: ./ansible/haproxy.cfg.j2
+        src: ./haproxy.cfg.j2
         dest: /etc/haproxy/haproxy.cfg
       notify: restart haproxy
 
