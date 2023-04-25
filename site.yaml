@@ -25,13 +25,7 @@
 - name: Install and configure HAProxy
   hosts: HAproxy
   become: true
-
-  vars:
-    app_servers:
-      - { name: "devA", ip: "devA_IP_Address" }
-      - { name: "devB", ip: "devB_IP_Address" }
-      - { name: "devC", ip: "devC_IP_Address" }
-
+  
   tasks:
     - name: Update apt cache
       apt:
@@ -50,7 +44,7 @@
 
     - name: Test deployed application
       uri:
-        url: "http://HApeoxy_IP_Address:Port"
+        url: "http://localhost"
         return_content: yes
         status_code: 200
         validate_certs: no
