@@ -25,6 +25,6 @@ frontend http-in
 backend app-backend
     mode http
     balance roundrobin
-    server devA 10.0.129.204:5000 check
-    server devB 10.0.133.67:5000 check
-    server devC 10.0.138.181:5000 check
+    {% for server in groups['webservers'] %}
+    server {{ server }} {{ hostvars[server]['ansible_default_ipv4']['address'] }}:5000 check
+    {% endfor %}
