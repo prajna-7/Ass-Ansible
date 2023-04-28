@@ -1,28 +1,28 @@
 Host BastionNSO
-  Hostname 54.175.113.212
+  Hostname <bastion_ip_address>
   User ubuntu
-  IdentityFile ~/.ssh/BastionNSO.pem
+  IdentityFile ~/.ssh/<ssh_key>
 
 Host devA
-  Hostname 10.0.129.204
+  Hostname <devA_ip_address>
   User ubuntu
-  IdentityFile ~/.ssh/devA.pem
+  IdentityFile ~/.ssh/<ssh_key>
   ProxyJump BastionNSO
 
 Host devB
-  Hostname 10.0.133.67
+  Hostname <devB_ip_address>
   User ubuntu
-  IdentityFile ~/.ssh/devB.pem
+  IdentityFile ~/.ssh/<ssh_key>
   ProxyJump BastionNSO
 
 Host devC
-  Hostname 10.0.138.181
+  Hostname <devC_ip_address>
   User ubuntu
-  IdentityFile ~/.ssh/devC.pem
+  IdentityFile ~/.ssh/<ssh_key>
   ProxyJump BastionNSO
 
 Host haproxy
-  Hostname 34.229.178.174
+  Hostname <HAproxy_ip_address>
   User ubuntu
-  IdentityFile ~/.ssh/haproxy.pem
+  IdentityFile ~/.ssh/<ssh_key>
   ProxyJump BastionNSO
