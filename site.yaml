@@ -3,7 +3,7 @@
     - name: Copy Flask app to remote server
       copy:
         src: ./application2.py
-        dest: /home/ubuntu/application2.py
+        dest: /home/application2.py
     
     - name: Install Python 3 and pip
       become: true
@@ -20,7 +20,7 @@
     
     - name: Start the Flask app in the background
       become: true
-      shell: nohup python3 /home/ubuntu/application2.py > /dev/null 2>&1 &
+      shell: nohup python3 /home/application2.py > /dev/null 2>&1 &
 
 - name: Install and configure HAProxy
   hosts: HAproxy
