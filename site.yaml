@@ -1,31 +1,44 @@
 - hosts: webservers
+  become: true
+  gather_facts: true
+
   tasks:
     - name: Copy Flask app to remote server
       copy:
         src: ./application2.py
-        dest: /home/application2.py
-    
+        dest: /home/ubuntu/application2.py
+
     - name: Install Python 3 and pip
       become: true
       apt:
-        name: 
+        name:
           - python3
           - python3-pip
         update_cache: yes
-    
+
     - name: Install Flask
       become: true
       pip:
         name: Flask
-    
-    - name: Start the Flask app in the background
-      become: true
-      shell: nohup python3 /home/application2.py > /dev/null 2>&1 &
 
-- name: Install and configure HAProxy
-  hosts: HAproxy
+    - name: Create systemd unit file for application2
+      copy:
+        src: ./application2.service
+        dest: /etc/systemd/system/application2.service
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start application2 service
+      systemd:
+        name: application2.service
+        state: started
+        enabled: yes
+
+- hosts: haproxy
   become: true
-  
+  gather_facts: true
   tasks:
     - name: Update apt cache
       apt:
@@ -40,11 +53,14 @@
       template:
         src: ./haproxy.cfg.j2
         dest: /etc/haproxy/haproxy.cfg
+      vars:
+        haproxy_ip: "{{ hostvars['haproxy']['ansible_default_ipv4']['address'] }}"
+      when: "'ansible_default_ipv4' in hostvars['haproxy']"
       notify: restart haproxy
 
     - name: Test deployed application
       uri:
-        url: "http://localhost"
+        url: "http://{{ hostvars['haproxy']['ansible_host'] | default(hostvars['haproxy']['ansible_default_ipv4']['address']) }}:80"
         return_content: yes
         status_code: 200
         validate_certs: no
@@ -65,3 +81,4 @@
       service:
         name: haproxy
         state: restarted
+
