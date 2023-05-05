@@ -6,7 +6,8 @@
     - name: Copy Flask app to remote server
       copy:
         src: ./application2.py
-        dest: /home/ubuntu/application2.py
+        dest: /home/application2.py
+        mode: '0755'
 
     - name: Install Python 3 and pip
       become: true
@@ -25,6 +26,7 @@
       copy:
         src: ./application2.service
         dest: /etc/systemd/system/application2.service
+        mode: '0777'
 
     - name: Reload systemd
       systemd:
