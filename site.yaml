@@ -60,6 +60,10 @@
       when: "'ansible_default_ipv4' in hostvars['haproxy']"
       notify: restart haproxy
 
+    - name: Restart haproxy
+      ansible.builtin.shell:
+        cmd: "sudo service haproxy restart"
+
     - name: Test deployed application
       uri:
         url: "http://{{ hostvars['haproxy']['ansible_host'] | default(hostvars['haproxy']['ansible_default_ipv4']['address']) }}:80"
@@ -77,10 +81,3 @@
           - "'Serving from' in response.content"
           - "'Serving from' in response.content"
       when: response is defined and response.status == 200
-
-  handlers:
-    - name: restart haproxy
-      service:
-        name: haproxy
-        state: restarted
-
