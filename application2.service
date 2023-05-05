@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 User=ubuntu
-WorkingDirectory=/home/ubuntu
+WorkingDirectory=/home
 ExecStart=/usr/bin/python3 /home/application2.py
 Restart=always
 
