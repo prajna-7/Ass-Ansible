@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=ubuntu
 WorkingDirectory=/home/ubuntu
-ExecStart=/usr/bin/python3 /home/ubuntu/application2.py
+ExecStart=/usr/bin/python3 /home/application2.py
 Restart=always
 
 [Install]
