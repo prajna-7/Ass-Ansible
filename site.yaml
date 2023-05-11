@@ -38,7 +38,7 @@
         state: started
         enabled: yes
 
-- hosts: haproxy
+- hosts: HAproxy
   become: true
   gather_facts: true
   tasks:
