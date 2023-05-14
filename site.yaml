@@ -56,8 +56,8 @@
         src: ./haproxy.cfg.j2
         dest: /etc/haproxy/haproxy.cfg
       vars:
-        haproxy_ip: "{{ hostvars['haproxy']['ansible_default_ipv4']['address'] }}"
-      when: "'ansible_default_ipv4' in hostvars['haproxy']"
+        haproxy_ip: "{{ hostvars['HAproxy']['ansible_default_ipv4']['address'] }}"
+      when: "'ansible_default_ipv4' in hostvars['HAproxy']"
       notify: restart haproxy
 
     - name: Restart haproxy
@@ -66,7 +66,7 @@
 
     - name: Test deployed application
       uri:
-        url: "http://{{ hostvars['haproxy']['ansible_host'] | default(hostvars['haproxy']['ansible_default_ipv4']['address']) }}:80"
+        url: "http://{{ hostvars['HAproxy']['ansible_host'] | default(hostvars['HAproxy']['ansible_default_ipv4']['address']) }}:80"
         return_content: yes
         status_code: 200
         validate_certs: no
