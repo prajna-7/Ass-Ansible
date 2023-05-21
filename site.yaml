@@ -38,6 +38,29 @@
         state: started
         enabled: yes
 
+    - name: Install SNMPd
+      become: true
+      apt:
+        name: snmpd
+        state: present
+
+    - name: Modify SNMPd configuration
+      become: true
+      lineinfile:
+        path: /etc/snmp/snmpd.conf
+        regexp: '^#?{{ item.regexp }}'
+        line: '{{ item.line }}'
+      with_items:
+       - { regexp: 'agentAddress\s+udp:.*', line: 'agentAddress udp:161,udp6:[::1]:161' }
+       - { regexp: 'agentAddress\s+udp:.*public$', line: 'agentAddress udp:1611,udp6:[::1]:1611' }
+        
+    - name: Restart snmpd
+      ansible.builtin.shell:
+        cmd: "sudo service snmpd restart" 
+
+     
+
+
 - hosts: HAproxy
   become: true
   gather_facts: true
@@ -46,11 +69,34 @@
       apt:
         update_cache: yes
 
+    - name: Install Nginx
+      apt:
+        name: curl
+        state: latest
+        
     - name: Install HAProxy
       apt:
         name: haproxy
         state: latest
-
+                      
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+          
+    - name: Copy Nginx configuration
+      become: true
+      template:
+        src: ./nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'     
+         
+    - name: Restart nginx
+      ansible.builtin.shell:
+        cmd: "sudo service nginx restart"          
+            
     - name: Configure HAProxy
       template:
         src: ./haproxy.cfg.j2
@@ -58,8 +104,7 @@
       vars:
         haproxy_ip: "{{ hostvars['HAproxy']['ansible_default_ipv4']['address'] }}"
       when: "'ansible_default_ipv4' in hostvars['HAproxy']"
-      notify: restart haproxy
-
+                
     - name: Restart haproxy
       ansible.builtin.shell:
         cmd: "sudo service haproxy restart"
@@ -81,3 +126,5 @@
           - "'Serving from' in response.content"
           - "'Serving from' in response.content"
       when: response is defined and response.status == 200
+
+
