@@ -69,7 +69,7 @@
       apt:
         update_cache: yes
 
-    - name: Install Nginx
+    - name: Install curl
       apt:
         name: curl
         state: latest
