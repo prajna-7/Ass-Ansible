@@ -1,0 +1,31 @@
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+    worker_connections 768; # multi_accept on;
+}
+
+## Append what you need below
+
+
+
+stream {
+    upstream snmp_backend {
+        {% for host in groups["webservers"] %}
+        server {{ hostvars[host]["ansible_default_ipv4"]["address"] }}:1611;
+        {% endfor %}
+    }
+
+    server {
+        listen 1611 udp;
+        proxy_pass snmp_backend;
+        proxy_responses 1;
+    }
+}
+
+
+##End of Config
+
+
