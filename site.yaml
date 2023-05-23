@@ -55,11 +55,9 @@
        - { regexp: 'agentAddress\s+udp:.*public$', line: 'agentAddress udp:1611,udp6:[::1]:1611' }
         
     - name: Restart snmpd
-      ansible.builtin.shell:
-        cmd: "sudo service snmpd restart" 
-
-     
-
+      ansible.builtin.systemd:
+        name: snmpd
+        state: restarted
 
 - hosts: HAproxy
   become: true
