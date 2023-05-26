@@ -38,26 +38,32 @@
         state: started
         enabled: yes
 
+    - name: Installing nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: true
+
     - name: Install SNMPd
       become: true
       apt:
         name: snmpd
         state: present
+        update_cache: true
 
-    - name: Modify SNMPd configuration
-      become: true
-      lineinfile:
-        path: /etc/snmp/snmpd.conf
-        regexp: '^#?{{ item.regexp }}'
-        line: '{{ item.line }}'
-      with_items:
-       - { regexp: 'agentAddress\s+udp:.*', line: 'agentAddress udp:161,udp6:[::1]:161' }
-       - { regexp: 'agentAddress\s+udp:.*public$', line: 'agentAddress udp:1611,udp6:[::1]:1611' }
+    - name: Configuring snmpd
+      template:
+             src: snmpd.conf
+             dest: /etc/snmp/snmpd.conf
         
     - name: Restart snmpd
       ansible.builtin.systemd:
         name: snmpd
         state: restarted
+
+    - name: apt update
+      apt:
+        update_cache: true
 
 - hosts: HAproxy
   become: true
@@ -90,6 +96,11 @@
         owner: root
         group: root
         mode: '0644'     
+
+    - name: configure nginx udp port
+      template:
+             src: ./port.conf
+             dest: /etc/nginx/sites-available/default
          
     - name: Restart nginx
       ansible.builtin.shell:
